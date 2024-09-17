@@ -107,11 +107,13 @@ class TesseractService extends Service {
 
     async getInstalledLangs() {
         try {
+            await fs.mkdir(this.langPath, { recursive: true })
             const dir = await fs.readdir(this.langPath)
             return dir.filter(s => s.endsWith('.traineddata.gz')).map(s => s.slice(0, - 15))
         }
         catch (err) {
             this.logger.error(`刷新语言列表时出错: %o`, err)
+            return []
         }
     }
 
