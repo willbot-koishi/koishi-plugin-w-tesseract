@@ -43,7 +43,7 @@ class TesseractService extends Service {
                 return `已安装的语言：${ langs.join(', ') || '无' }`
             })
 
-        ctx.command('tesseract.lang.install <lang:string>', '从 JsDelivr 安装语言')
+        ctx.command('tesseract.lang.install <lang:string>', '安装语言')
             .action(async (_, lang) => {
                 try {
                     await this.installLang(lang)
@@ -84,7 +84,7 @@ class TesseractService extends Service {
     async installLang(lang: string) {
         const gzipFileName = `${lang}.traineddata.gz`
         const gzipFilePath = path.resolve(this.langPath, gzipFileName)
-        const url = `https://cdn.jsdelivr.net/npm/@tesseract.js-data/${lang}/4.0.0_best_int/${gzipFileName}`
+        const url = this.config.source.replace(/{lang}/g, lang).replace(/{file}/g, gzipFileName)
 
         this.logger.info(`正在下载训练数据 <${url}> 到 <${gzipFilePath}>……`)
         const resp = await this.ctx.http.get(url, {
@@ -132,6 +132,7 @@ class TesseractService extends Service {
 namespace TesseractService {
     export interface Config {
         langPath: string
+        source: string
         downloadTimeout: number
     }
 
@@ -143,6 +144,10 @@ namespace TesseractService {
             })
             .description('存放 Tesseract.js 语言训练数据的路径')
             .default('data/tesseract'),
+        source: z
+            .string()
+            .description('Tesseract.js 训练数据下载源')
+            .default('https://unpkg.com/@tesseract.js-data/{lang}/4.0.0_best_int/{file}'),
         downloadTimeout: z
             .natural()
             .description('下载超时时间（毫秒）')
