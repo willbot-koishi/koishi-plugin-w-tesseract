@@ -1,7 +1,7 @@
 {
   "name": "koishi-plugin-w-tesseract",
   "description": "WillBot: Tesseract.js service",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "files": [
@@ -19,6 +19,16 @@
   },
   "dependencies": {
     "tesseract.js": "^5.1.1"
+  },
+  "koishi": {
+    "service": {
+      "required": [
+        "http"
+      ],
+      "implements": [
+        "tesseract"
+      ]
+    }
   },
   "scripts": {
     "build": "yarn workspace willbot build w-tesseract",

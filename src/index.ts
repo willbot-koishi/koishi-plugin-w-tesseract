@@ -9,8 +9,6 @@ import Tesseract, { createWorker } from 'tesseract.js'
 
 export const name = 'w-tesseract'
 
-export const inject = [ 'http' ]
-
 declare module 'koishi' {
     interface Context {
         tesseract: TesseractService
@@ -24,6 +22,8 @@ const streamToBuffer = async (stream: ReadableStream<Uint8Array>): Promise<Buffe
 }
 
 class TesseractService extends Service {
+    static inject = [ 'http' ]
+
     logger = this.ctx.logger('w-tesseract')
 
     get langPath() {
